@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -128,3 +129,15 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Celery settings
+
+CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672//"
+CELERY_RESULT_BACKEND = "rpc://"
+
+CELERY_BEAT_SCHEDULE = {
+    "sample_task": {
+        "task": "prices.tasks.sample_task",
+        "schedule": crontab(minute="*/1"),
+    },
+}
